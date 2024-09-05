@@ -14,16 +14,21 @@ function App() {
   );
 
   const selectBox = (row, col) => {
-    let newGrid = gridFull.map((arr) => [...arr]); // Create a copy of the grid
-    newGrid[row][col] = !newGrid[row][col]; // Toggle the selected box
-    setGridFull(newGrid); // Update state with the new grid
+    let newGrid = gridFull.map((arr) => [...arr]);
+    newGrid[row][col] = !newGrid[row][col];
+    setGridFull(newGrid);
   };
 
   return (
     <>
-      <div className="max-w-3xl">
+      <div className="md:max-w-[47rem]">
         <h1 className="font-bold">The Game of Life</h1>
-        <Grid gridFull={gridFull} rows={rows} cols={cols} />
+        <Grid
+          gridFull={gridFull}
+          rows={rows}
+          cols={cols}
+          selectBox={selectBox}
+        />
         <h2 className="font-semibold text-lg">Generations: {gen}</h2>
       </div>
     </>

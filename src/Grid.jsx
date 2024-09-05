@@ -2,7 +2,7 @@ import React from "react";
 import Box from "./Box";
 
 export default function Grid({ gridFull, rows, cols, selectBox }) {
-  const width = cols * 14;
+  const width = cols * 16;
   var rowsArr = [];
 
   for (var i = 0; i < rows; i++) {
