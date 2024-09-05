@@ -37,33 +37,31 @@ function App() {
   const arrayClone = (arr) => JSON.parse(JSON.stringify(arr));
 
   const play = useCallback(() => {
-    let g = gridFull;
-    let g2 = arrayClone(gridFull);
+    setGridFull((prevGrid) => {
+      const newGrid = arrayClone(prevGrid);
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          let count = 0;
+          if (i > 0 && prevGrid[i - 1][j]) count++;
+          if (i > 0 && j > 0 && prevGrid[i - 1][j - 1]) count++;
+          if (i > 0 && j < cols - 1 && prevGrid[i - 1][j + 1]) count++;
+          if (j < cols - 1 && prevGrid[i][j + 1]) count++;
+          if (j > 0 && prevGrid[i][j - 1]) count++;
+          if (i < rows - 1 && prevGrid[i + 1][j]) count++;
+          if (i < rows - 1 && j > 0 && prevGrid[i + 1][j - 1]) count++;
+          if (i < rows - 1 && j < cols - 1 && prevGrid[i + 1][j + 1]) count++;
 
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < cols; j++) {
-        let count = 0;
-        if (i > 0 && g[i - 1][j]) count++;
-        if (i > 0 && j > 0 && g[i - 1][j - 1]) count++;
-        if (i > 0 && j < cols - 1 && g[i - 1][j + 1]) count++;
-        if (j < cols - 1 && g[i][j + 1]) count++;
-        if (j > 0 && g[i][j - 1]) count++;
-        if (i < rows - 1 && g[i + 1][j]) count++;
-        if (i < rows - 1 && j > 0 && g[i + 1][j - 1]) count++;
-        if (i < rows - 1 && j < cols - 1 && g[i + 1][j + 1]) count++;
-
-        if (g[i][j] && (count < 2 || count > 3)) g2[i][j] = false;
-        if (!g[i][j] && count === 3) g2[i][j] = true;
+          if (prevGrid[i][j] && (count < 2 || count > 3)) newGrid[i][j] = false;
+          if (!prevGrid[i][j] && count === 3) newGrid[i][j] = true;
+        }
       }
-    }
-
-    setGridFull(g2);
+      return newGrid;
+    });
     setGen((prevGen) => prevGen + 1);
-  }, [gridFull]);
+  }, [rows, cols]);
 
   const startSimulation = () => {
     if (!intervalRef.current) {
-      // Prevent multiple intervals
       intervalRef.current = setInterval(play, speed);
     }
   };
@@ -71,13 +69,13 @@ function App() {
   const stopSimulation = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
-      intervalRef.current = null; // Reset the ref to indicate no active interval
+      intervalRef.current = null;
     }
   };
 
   return (
     <>
-      <div className="md:max-w-[47rem] flex flex-col items-center">
+      <div className="max-w-[47rem] flex flex-col items-center">
         <h1 className="font-bold">The Game of Life</h1>
         <Buttons
           seed={seed}
