@@ -1,11 +1,11 @@
-import "./App.css";
+import React, { useState, useCallback, useRef } from "react";
 import Grid from "./Grid";
 import Buttons from "./Buttons";
-import { useState, useCallback, useRef } from "react";
+import framesData from "./frames_data.json"; // Import your frames data JSON
 
 function App() {
-  const [gen, setGen] = useState(0);
-  const speed = 100;
+  const [gen, setGen] = useState(0); // Generation count for Game of Life
+  const speed = 33;
   const rows = 30;
   const cols = 50;
   const [gridFull, setGridFull] = useState(
@@ -14,6 +14,8 @@ function App() {
       .map(() => Array(cols).fill(false))
   );
 
+  const [showBadApple, setShowBadApple] = useState(false);
+  const [animationFrameIndex, setAnimationFrameIndex] = useState(0);
   const intervalRef = useRef(null);
 
   const selectBox = (row, col) => {
@@ -22,7 +24,7 @@ function App() {
     setGridFull(newGrid);
   };
 
-  let seed = () => {
+  const seed = () => {
     let newGrid = gridFull.map((arr) => [...arr]);
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
@@ -62,7 +64,16 @@ function App() {
 
   const startSimulation = () => {
     if (!intervalRef.current) {
-      intervalRef.current = setInterval(play, speed);
+      intervalRef.current = setInterval(() => {
+        if (showBadApple) {
+          setAnimationFrameIndex((prevIndex) => {
+            const nextIndex = (prevIndex + 1) % framesData.length;
+            return nextIndex;
+          });
+        } else {
+          play();
+        }
+      }, speed);
     }
   };
 
@@ -73,23 +84,36 @@ function App() {
     }
   };
 
+  const toggleBadApple = () => {
+    setShowBadApple((prev) => !prev);
+  };
+
   return (
     <>
       <div className="max-w-[47rem] flex flex-col items-center">
-        <h1 className="font-bold">The Game of Life</h1>
+        <h1 className="font-bold">
+          {showBadApple ? "Bad Apple Animation" : "The Game of Life"}
+        </h1>
         <Buttons
           seed={seed}
           startSimulation={startSimulation}
           stopSimulation={stopSimulation}
+          toggleBadApple={toggleBadApple}
         />
-
         <Grid
           gridFull={gridFull}
           rows={rows}
           cols={cols}
           selectBox={selectBox}
+          animationData={framesData}
+          animationFrameIndex={animationFrameIndex}
+          type={showBadApple ? "animation" : "game"}
         />
-        <h2 className="font-semibold text-lg">Generations: {gen}</h2>
+        <h2 className="font-semibold text-lg">
+          {showBadApple
+            ? `Frame: ${animationFrameIndex + 1}`
+            : `Generations: ${gen}`}
+        </h2>
       </div>
     </>
   );
