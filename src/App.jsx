@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useRef } from "react";
 import Grid from "./Grid";
 import Buttons from "./Buttons";
-import framesData from "./frames_data.json"; // Import your frames data JSON
+import framesData from "./frames_data.json";
 
 function App() {
-  const [gen, setGen] = useState(0); // Generation count for Game of Life
+  const [gen, setGen] = useState(0);
   const speed = 33;
   const rows = 30;
   const cols = 50;

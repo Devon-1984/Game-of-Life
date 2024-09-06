@@ -14,7 +14,6 @@ export default function Grid({
   let rowsArr = [];
 
   if (type === "animation") {
-    // Rendering the "Bad Apple" animation
     const currentFrame = animationData[animationFrameIndex] || [];
 
     for (let i = 0; i < rows; i++) {
@@ -27,7 +26,6 @@ export default function Grid({
       }
     }
   } else {
-    // Rendering the Game of Life
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         const boxId = `${i}_${j}`;
